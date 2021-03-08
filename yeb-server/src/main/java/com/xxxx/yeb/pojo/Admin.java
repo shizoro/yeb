@@ -11,10 +11,15 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
- * <p>
- * 
- * </p>
- *
+ * Lombok注解
+ *      @Data
+ *      @EqualsAndHashCode(callSuper = false)
+ *      @Accessors(chain = true)
+ * swagger注解
+ *      @TableName("t_admin")
+ *      @ApiModel(value="Admin对象", description="")
+ *      @ApiModelProperty(value = "id")
+ *      @TableId(value = "id", type = IdType.AUTO)
  * @author cv工程师
  * @since 2021-03-08
  */
