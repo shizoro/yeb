@@ -1,6 +1,8 @@
 package com.xxxx.yeb.config.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -27,7 +29,7 @@ public class JwtTokenUtil {
     /**
      * JWT的超期限时间（60*60*24）
      */
-    @Value("$jwt.expiration")
+    @Value("${jwt.expiration}")
     private Long expiration;
 
     /**
@@ -69,7 +71,7 @@ public class JwtTokenUtil {
      * @param token
      * @return
      */
-    public Claims getClaimsFromToken(String token){
+    private Claims getClaimsFromToken(String token){
         Claims claims = null;
         try {
             claims = Jwts.parser()
