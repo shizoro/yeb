@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 
 /**
@@ -25,8 +26,8 @@ public class LoginController {
 
     @ApiOperation(value = "登录成功返回token")
     @PostMapping("/login")
-    public RespBean login(@RequestBody AdminLoginParam adminLoginParam){
-        return adminService.login(adminLoginParam.getUsername(),adminLoginParam.getPassword());
+    public RespBean login(@RequestBody AdminLoginParam adminLoginParam,HttpServletRequest request){
+        return adminService.login(adminLoginParam.getUsername(), adminLoginParam.getPassword(), adminLoginParam.getCode(), request);
     }
 
     @ApiOperation(value = "退出登录")

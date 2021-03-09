@@ -18,6 +18,10 @@ import lombok.experimental.Accessors;
 public class AdminLoginParam {
     @ApiModelProperty(value = "用户名", required = true)
     private String username;
+
     @ApiModelProperty(value = "用户密码", required = true)
     private String password;
+
+    @ApiModelProperty(value = "验证码", required = true)
+    private String Code;
 }
