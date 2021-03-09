@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -56,10 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/webjars/**",
                 "/swagger-resources/**",
                 "/v2/api-docs/**",
-                "/captcha",
-                "/user/**",
-                "/ws/ep/**",
-                "/ws/chat/**"
+                "/captcha"
         );
     }
 
@@ -99,7 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return username ->{
             Admin admin = adminService.getAdminByUserName(username);
             if (null == admin){
-                return null;
+                throw new UsernameNotFoundException("用户名或密码错误！");
             }
             return admin;
         };
@@ -115,5 +113,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new JwtAuthenticationTokenFilter();
     }
 
-    
+
 }

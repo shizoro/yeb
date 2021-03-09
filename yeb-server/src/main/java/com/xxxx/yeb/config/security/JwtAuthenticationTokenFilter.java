@@ -1,6 +1,6 @@
 package com.xxxx.yeb.config.security;
 
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.annotation.Resource;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -17,42 +16,43 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Jwt登录授权过滤器
- * @author arthur
- * @date 2021/3/8 22:02
+ * JWT登录拦截器
+ * @author cv工程师
+ * @since 1.0.0
  */
 public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
-    @Value("$jwt.tokenHead")
+    @Value("${jwt.tokenHead}")
     private String tokenHead;
-    @Resource
-    private JwtTokenUtil jwtTokenUtil;
-    @Resource
+    @Autowired
     private UserDetailsService userDetailsService;
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        // 获取请求头
-        String authHeader = httpServletRequest.getHeader(tokenHeader);
-        // 存在token
-        if (null != authHeader && authHeader.startsWith(this.tokenHead)){
-            String authToken = authHeader.substring(tokenHead.length());
-            // 获取用户名
-            String username = jwtTokenUtil.getUserNameFormToken(authToken);
-            // token存在用户名但未登录
-            if (null != username && null == SecurityContextHolder.getContext().getAuthentication()){
-                // 登录
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                // 验证token是否有效，重新设置用户对象
-                if (jwtTokenUtil.validateToken(authToken,userDetails)){
-                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        //获取请求头
+        String authHeader = request.getHeader(tokenHeader);
+        //存在token
+        if (null != authHeader && authHeader.startsWith(tokenHead)) {
+            String token = authHeader.substring(tokenHead.length());
+            //获取用户名
+            String username = jwtTokenUtil.getUserNameFormToken(token);
+            //存在token但是未登录
+            if (null != username && null == SecurityContextHolder.getContext().getAuthentication()) {
+                //登录
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                //判断token是否有效
+                if (jwtTokenUtil.validateToken(token, userDetails)) {
+                    //更新Security用户对象
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
         }
-        filterChain.doFilter(httpServletRequest,httpServletResponse);
+        filterChain.doFilter(request, response);
     }
 }

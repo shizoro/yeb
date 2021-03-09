@@ -51,3 +51,26 @@ jwt:
   expiration: 604800
   # JWT 负载中拿到开头
   tokenHead: Bearer
+
+# Redis配置
+redis:
+  # 连接超时时间
+  timeout: 10000ms
+  # Redis服务器地址
+  host: 192.168.10.100
+  # Redis服务器连接端口
+  port: 6379
+  # 连接密码
+  password: root
+  # 选择连接那个数据库
+  database: 0
+  lettuce:
+    pool:
+      # 最大连接数 默认为8
+      max-active: 1024
+      # 最大连接阻塞时间，单位毫秒，默认为-1
+      max-wait: 10000ms
+      # 最大空闲连接 默认为 8
+      max-idle: 200
+      # 最小空闲连接 默认为0
+      min-idle: 5

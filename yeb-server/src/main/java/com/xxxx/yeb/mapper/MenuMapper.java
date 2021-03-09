@@ -3,6 +3,8 @@ package com.xxxx.yeb.mapper;
 import com.xxxx.yeb.pojo.Menu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -12,5 +14,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2021-03-08
  */
 public interface MenuMapper extends BaseMapper<Menu> {
-
+    /**
+     * 根据用户id查询菜单
+     * @param id
+     * @return
+     */
+    List<Menu> getMenuByAdminId(Integer id);
 }
