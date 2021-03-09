@@ -24,7 +24,7 @@ public class LoginController {
     private IAdminService adminService;
 
     @ApiOperation(value = "登录成功返回token")
-    @RequestMapping("/login")
+    @PostMapping("/login")
     public RespBean login(@RequestBody AdminLoginParam adminLoginParam){
         return adminService.login(adminLoginParam.getUsername(),adminLoginParam.getPassword());
     }

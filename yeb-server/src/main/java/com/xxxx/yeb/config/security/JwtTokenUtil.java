@@ -33,6 +33,19 @@ public class JwtTokenUtil {
     private Long expiration;
 
     /**
+     * 根据负载生成JWT Token
+     * @param claims
+     * @return
+     */
+    private String generateToken(Map<String, Object> claims) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setExpiration(generateExpiration())
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+    }
+
+    /**
      * 根据用户信息生成 Token
      * @param userDetails
      * @return
@@ -42,19 +55,6 @@ public class JwtTokenUtil {
         claims.put(CLAIM_KEY_USERNAME,userDetails.getUsername());
         claims.put(CLAIM_KEY_CREATED,new Date());
         return generateToken(claims);
-    }
-
-    /**
-     * 根据负载生成JWT Token
-     * @param claims
-     * @return
-     */
-    private String generateToken(Map<String, Object> claims) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .signWith(SignatureAlgorithm.ES512,secret)
-                .setExpiration(generateExpiration())
-                .compact();
     }
 
     /**
