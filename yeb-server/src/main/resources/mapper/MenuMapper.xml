@@ -31,6 +31,14 @@
         </collection>
     </resultMap>
 
+    <resultMap id="MenusByRole" type="com.xxxx.yeb.pojo.Menu" extends="BaseResultMap">
+        <collection property="roles" ofType="com.xxxx.yeb.pojo.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnameZh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id, url, path, component, name, iconCls, keepAlive, requireAuth, parentId, enabled
@@ -61,6 +69,23 @@
           AND mr.rid = ar.rid
           AND ar.adminId = #{id}
         ORDER BY m1.id,m2.id
+    </select>
+    <!--通过角色id获取菜单列表-->
+    <select id="getAllMenusByRole" resultMap="MenusByRole">
+        SELECT
+            m.*,
+            r.id AS rid,
+            r.`name` AS rname,
+            r.nameZh AS rnameZh
+        FROM
+            t_menu m,
+            t_menu_role mr,
+            t_role r
+        WHERE
+            m.id = mr.mid
+          AND mr.rid = r.id
+        ORDER BY
+            m.id
     </select>
 
 </mapper>

@@ -3,9 +3,11 @@ package com.xxxx.yeb.service;
 import com.xxxx.yeb.pojo.Admin;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.xxxx.yeb.pojo.RespBean;
+import com.xxxx.yeb.pojo.Role;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.List;
 
 /**
  * 登录逻辑
@@ -29,4 +31,11 @@ public interface IAdminService extends IService<Admin> {
      * @return
      */
     Admin getAdminByUserName(String username);
+
+    /**
+     * 根据用户id获取权限列表
+     * @param adminId
+     * @return
+     */
+    List<Role> getRoles(Integer adminId);
 }

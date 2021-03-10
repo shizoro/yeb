@@ -1,18 +1,21 @@
 package com.xxxx.yeb.config.security;
 
+import com.xxxx.yeb.config.component.CustomFilter;
+import com.xxxx.yeb.config.component.CustomUrlDecisionManager;
 import com.xxxx.yeb.pojo.Admin;
 import com.xxxx.yeb.service.IAdminService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.annotation.Resource;
@@ -30,6 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
     @Resource
     private RestAuthorizationEntryPoint restAuthorizationEntryPoint;
+    @Resource
+    private CustomUrlDecisionManager customUrlDecisionManager;
+    @Resource
+    private CustomFilter customFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -76,6 +83,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 除了上面的请求其他都需要认证
                 .anyRequest()
                 .authenticated()
+                // 动态权限配置
+                .withObjectPostProcessor(
+                        new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                            @Override
+                            public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                                object.setAccessDecisionManager(customUrlDecisionManager);
+                                object.setSecurityMetadataSource(customFilter);
+                                return object;
+                            }
+                        }
+                )
                 .and()
                 // 禁用缓存
                 .headers()
@@ -96,10 +114,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public UserDetailsService userDetailsService() {
         return username ->{
             Admin admin = adminService.getAdminByUserName(username);
-            if (null == admin){
-                throw new UsernameNotFoundException("用户名或密码错误！");
+            if (null != admin){
+                admin.setRoles(adminService.getRoles(admin.getId()));
+                return admin;
             }
-            return admin;
+            return null;
         };
     }
 

@@ -38,14 +38,25 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     public List<Menu> getMenuByAdminId() {
         // 得到登录用户的id
         Integer adminId = ((Admin) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        ValueOperations<String,Object> valueOperations = redisTemplate.opsForValue();
+        /*ValueOperations<String,Object> valueOperations = redisTemplate.opsForValue();
         // 查询缓存是否有数据
         List<Menu> menus = (List<Menu>) valueOperations.get("menu_" + adminId);
         if (CollectionUtils.isEmpty(menus)){
             // 如果没有数据，数据中查询，并设置到缓存中
             menus = menuMapper.getMenuByAdminId(adminId);
             valueOperations.set("menu_" + adminId,menus);
-        }
+        }*/
+
+        List<Menu> menus = menuMapper.getMenuByAdminId(adminId);
         return menus;
+    }
+
+    /**
+     * 通过用户角色获取菜单列表
+     * @return
+     */
+    @Override
+    public List<Menu> getAllMenusByRole() {
+        return menuMapper.getAllMenusByRole();
     }
 }

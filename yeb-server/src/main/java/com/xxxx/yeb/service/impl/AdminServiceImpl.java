@@ -3,9 +3,11 @@ package com.xxxx.yeb.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xxxx.yeb.config.security.JwtTokenUtil;
+import com.xxxx.yeb.mapper.RoleMapper;
 import com.xxxx.yeb.pojo.Admin;
 import com.xxxx.yeb.mapper.AdminMapper;
 import com.xxxx.yeb.pojo.RespBean;
+import com.xxxx.yeb.pojo.Role;
 import com.xxxx.yeb.service.IAdminService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +45,8 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     private String tokenHead;
     @Resource
     private AdminMapper adminMapper;
+    @Resource
+    private RoleMapper roleMapper;
 
 
     /**
@@ -86,5 +91,15 @@ public class AdminServiceImpl extends ServiceImpl<AdminMapper, Admin> implements
     @Override
     public Admin getAdminByUserName(String username) {
         return adminMapper.selectOne(new QueryWrapper<Admin>().eq("username",username));
+    }
+
+    /**
+     * 根据用户id获取权限列表
+     * @param adminId
+     * @return
+     */
+    @Override
+    public List<Role> getRoles(Integer adminId) {
+        return roleMapper.getRoles(adminId);
     }
 }

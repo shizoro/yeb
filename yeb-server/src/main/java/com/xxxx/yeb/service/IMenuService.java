@@ -21,4 +21,10 @@ public interface IMenuService extends IService<Menu> {
      */
     List<Menu> getMenuByAdminId();
 
+    /**
+     * 通过角色获取用户菜单列表
+     * @return
+     */
+    List<Menu> getAllMenusByRole();
+
 }

@@ -1,4 +1,4 @@
-package com.xxxx.yeb.config;
+package com.xxxx.yeb.config.component;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

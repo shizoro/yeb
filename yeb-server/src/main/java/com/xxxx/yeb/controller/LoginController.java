@@ -43,9 +43,11 @@ public class LoginController {
         if (null == principal){
             return null;
         }
+        String username = principal.getName();
         Admin admin = adminService.getAdminByUserName(principal.getName());
         // 返回前段时将密码设置为null，提高安全性
         admin.setPassword(null);
+        admin.setRoles(adminService.getRoles(admin.getId()));
         return admin;
     }
 }

@@ -1,4 +1,4 @@
-package com.xxxx.yeb.config;
+package com.xxxx.yeb.config.component;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
